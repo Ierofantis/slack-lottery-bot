@@ -5,8 +5,8 @@ const Config = require('../../../config')
 const url = process.env.SLACK_WEBHOOK_URL
 const webhook = new IncomingWebhook(url)
 const lotteryKey = process.env.LOTTERY_KEY
-const { User } = require('../../../models/user')
-const { Lottery } = require('../../../models/lottery')
+const User  = require('../../../models/user')
+const Lottery  = require('../../../models/lottery')
 
 exports.connect = (request, response) => {
   webhook.send('Event started please register!', (err, res) => {
@@ -23,6 +23,9 @@ exports.connect = (request, response) => {
 exports.buyin = async (request, response) => {
   const lottery = await Lottery.where({ active: true }).findOne();
   let slackMsg;
+  const text = request.body.event.text.replace('<@UDW82H33R> ', '').split(' ');
+  const userName = text[0];
+
   if (lottery) {
     const userExistsInDB = await User.where({
       slack_id: request.body.event.user
@@ -34,7 +37,7 @@ exports.buyin = async (request, response) => {
       });
       await newUser.save();
     } else {
-      userExistsInDB.reg_alias = 'yeah';
+      userExistsInDB.reg_alias = userName;
       await userExistsInDB.save();
     }
 
@@ -53,5 +56,4 @@ exports.buyin = async (request, response) => {
       response.customSuccess('ok');
     }
   });
-
 };
