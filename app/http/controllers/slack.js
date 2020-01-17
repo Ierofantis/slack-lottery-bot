@@ -1,47 +1,47 @@
-const { IncomingWebhook } = require('@slack/webhook');
-const logger = require('../../helpers/logger');
-const Config = require('../../../config');
+const { IncomingWebhook } = require('@slack/webhook')
+const logger = require('../../helpers/logger')
+const Config = require('../../../config')
 
-const url = process.env.SLACK_WEBHOOK_URL;
-const webhook = new IncomingWebhook(url);
-const lotteryKey = process.env.LOTTERY_KEY;
-
+const url = process.env.SLACK_WEBHOOK_URL
+const webhook = new IncomingWebhook(url)
+const lotteryKey = process.env.LOTTERY_KEY
+const { User } = require('../../../models/user')
+const { Lottery } = require('../../../models/lottery')
 
 exports.connect = (request, response) => {
-  console.log(url)
   webhook.send('Event started please register!', (err, res) => {
     if (err) {
-      console.log('Error:', err);
-      response.customSuccess('ok');
+      console.log('Error:', err)
+      response.customSuccess('ok')
     } else {
       // console.log('Message sent: ', res);
-      response.customSuccess(res);
+      response.customSuccess(res)
     }
-  });
-};
+  })
+}
 
-exports.buyin = (request, response) => {
-  response.customSuccess({
-    challenge: request.body.challenge
-  });
+exports.buyin = async (request, response) => {
+  const oldLottery = await Lottery.where({ active: true }).findOne()
 
-  // const text = request.body.event.text.replace('<@UDW82H33R> ', '').split(' ');
-  // const { user } = request.body.event;
-  // const userName = text[0];
+  if (!oldLottery) {
+    const userExistsInDB = await User.where({
+      slack_id: request.body.event.user
+    }).findOne()
 
-  // let slackMsg = false;
-  // if (true) {
-  //   slackMsg = `Thanks Dude ({${userName}) Good Luck!`;
-  // } else {
-  //   slackMsg = `Sorry Dude (${userName}) Νο massage today!`;
-  // }
-  
-  // webhook.send(slackMsg, (err, res) => {
-  //   if (err) {
-  //     logger.error(err);
-  //   } else {
-  //     response.customSuccess(res);
-  //   }
-  // });
-};
-1
+    if (!userExistsInDB) {
+      const newUser = new User({
+        slack_id: request.body.event.user
+      })
+
+      await newUser.save()
+    }
+
+    const newLottery = new User({
+      participant: request.body.event.user
+    })
+
+    await newLottery.save()
+  } else {
+    return response.customSuccess('is running')
+  }
+}
