@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+.logos {
+  width: 192px;
+  height: auto;
+  background: transparent;
+}
+
+.efood-logo {
+  margin-top: 40px;
+  margin-right: 40px;
+}
+
+.custom-label {
+  font-size: 22px;
+  vertical-align: middle;
+}
