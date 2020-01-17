@@ -7,22 +7,20 @@ const url = process.env.SLACK_WEBHOOK_URL;
 const webhook = new IncomingWebhook(url);
 
 exports.end = async (request, response) => {
-  console.log("eeedd");
-  let winners;
-
+  let winners = [];
   const lottery = await Lottery.where({ active: true }).findOne();
 
   console.log(lottery);
 
   if (lottery) {
-    startRandomSelection(lottery);
-
-    winners = lottery.winners;
+    winners = await startRandomSelection(lottery);
 
     if (winners.length === 0) {
       winners = ["Leo", "Nik", "Teo", "Dimitris"];
     }
-    console.log(winners);
+
+    console.log("@@@ ", winners);
+
     webhook.send("Winners Are:" + winners.join(","), (err, res) => {
       if (err) {
         console.log("Error:", err);
@@ -74,19 +72,83 @@ exports.cancel = async (request, response) => {
 };
 
 async function startRandomSelection(lottery) {
+  const maxWinners = lottery.max_winners || 10;
+  const userProbabilityBucket = [];
+  const winnersList = [];
+  let probabilitySum = 0;
+
   let participantsIds = lottery.participants
     .filter((el) => el !== null)
     .filter(function(elem, index, self) {
       return index === self.indexOf(elem);
     });
 
-  console.log("participantsIds ", participantsIds);
-
   let participants = await User.find({
     slack_id: { $in: participantsIds }
   });
 
-  console.log(participants);
+  for (const participant of participants) {
+    console.log("here ", participant);
+    console.log("here ", participant.probability);
 
-  return participants;
+    if ([null, undefined].includes(participant.probability)) {
+      participant.probability = 100;
+      participant.save();
+    }
+
+    let tempProbability = participant.probability;
+    probabilitySum += tempProbability;
+    userProbabilityBucket.push({
+      participant: participant,
+      bucket: probabilitySum
+    });
+  }
+
+  while (winnersList.length < maxWinners) {
+    let rand = randomInteger(1, probabilitySum);
+    console.log("probabilitySum ", probabilitySum);
+    console.log("rand ", rand);
+
+    let winner = findBucketWinner(rand, userProbabilityBucket, winnersList);
+    console.log("winner ", winner);
+
+    if (winner) {
+      winnersList.push(winner.slack_id);
+    }
+  }
+
+  let newParticipants = await User.find({
+    slack_id: { $in: participantsIds }
+  });
+
+  for (const participant of newParticipants) {
+    if (
+      !winnersList.includes(participant.slack_id) &&
+      participant.probability !== 100
+    ) {
+      participant.probability = Math.min(100, participant.probability + 10);
+    } else {
+      participant.probability = 1;
+    }
+    participant.save();
+  }
+
+  console.log("!! ", winnersList);
+
+  return winnersList;
+}
+
+function findBucketWinner(rand, userProbabilityBucket, winnersList) {
+  for (const userProbability of userProbabilityBucket) {
+    if (
+      rand <= userProbability.bucket &&
+      !winnersList.includes(userProbability.participant.slack_id)
+    ) {
+      return userProbability.participant;
+    }
+  }
+}
+
+function randomInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
