@@ -32,7 +32,8 @@ exports.buyin = async (request, response) => {
 
     if (!userExistsInDB) {
       const newUser = new User({
-        slack_id: request.body.event.user
+        slack_id: request.body.event.user,
+        probability: 100
       });
       await newUser.save();
     } else {
