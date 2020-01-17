@@ -6,7 +6,15 @@ const configuration = require('./config');
 const logger = require('./app/helpers/logger');
 const routes = require('./app/http/routes');
 
+const mongoose = require("mongoose");
 
+
+//connect to mongodb
+mongoose
+  .connect(`mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@dswhatever`, { useNewUrlParser: true })
+  .then(() => console.log("Connected to MongoDB..."))
+  .catch(err => console.error("Could not connect to MongoDB..."));
+  
 app.get("/", (req, res) => res.json({ status: 200, message: "hello" }));
 
 app.use('/api', routes.api);
