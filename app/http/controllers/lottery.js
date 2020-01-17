@@ -21,13 +21,36 @@ exports.end = (request, response) => {
 
 exports.create = async (request, response) => {
 
-  const data = request.body;
-  data.active = true;
-  data.participants = [];
-  data.winners = [];
-  const newLottery = new Lottery(data);
-  await newLottery.save();
+  const oldLottery = await Lottery
+      .where({ active: true })
+      .findOne();
+  if (oldLottery) { 
+    return response.customError('There is already an active poll');
+  } else {
+    const data = request.body;
+    data.active = true;
+    data.participants = [];
+    data.winners = [];
+    const newLottery = new Lottery(data);
+    await newLottery.save();
 
-  return response.customSuccess();
+    return response.customSuccess();
+  }
+
+}
+
+
+exports.cancel = async (request, response) => {
+
+  const oldLottery = await Lottery
+      .where({ active: true })
+      .findOne();
+  if (oldLottery) { 
+    oldLottery.active = false;
+    await oldLottery.save();
+    return response.customSuccess('Lottery Cancelled');
+  } else {
+    return response.customError('No active lottery found');
+  }
 
 }
