@@ -37,15 +37,15 @@
   }
 }
 
-.logos {
+#efood-logo {
   width: 192px;
   height: auto;
-  background: transparent;
 }
 
-.efood-logo {
-  margin-top: 40px;
-  margin-right: 40px;
+.emojis {
+  font-size: 96px;
+  -user-select: none;
+  cursor: default;
 }
 
 .custom-label {

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 import './App.css';
 import {
   Container,
@@ -20,44 +21,59 @@ const methods = {
 }
 
 function App() {
+  return (
+    <Router>
+      <Header />
+      <Route exact path="/" component={Main} />
+      <Route exact path="/waiting" component={Waiting} />
+      <Route exact path="/winners" component={Winners} />
+    </Router> 
+  );
+}
+
+function Header() {
+  return (
+    <div className="App">
+      <Jumbotron>
+        <h1>Καλώς ήρθες στο <strong>Chair Massage Lottery</strong>!</h1>
+        <br />
+        <img src="/efood_logo.png" id="efood-logo" />
+        <h1 className="emojis">💆‍♂️💆‍♀️</h1>
+      </Jumbotron>    
+    </div>
+  )
+}
+
+function Main() {
   const [lotteryType, setLotteryType] = useState("1");
   const [timeWindow, setTimeWindow] = useState("10");
   const [maxWinners, setMaxWinners] = useState("12");
   const [question, setQuestion] = useState("Who..?");
 
   return (
-    <div className="App">
-      <Jumbotron>
-        <h1>Καλώς ήρθες στο <strong>Chair Massage Lottery</strong>!</h1>
-        <br />
-        <img src="/efood_logo.png" className="logos efood-logo" />
-        <img src="/massage_icon.png" className="logos" />
-      </Jumbotron>
+    <Container>
+      <Row>
+        <Col sm={{ size: 8, offset: 2 }}>
+          <Settings
+            setLotteryType={setLotteryType}
+            setTimeWindow={setTimeWindow}
+            setMaxWinners={setMaxWinners}
+            setQuestion={setQuestion}
+          />
 
-      <Container>
-        <Row>
-          <Col sm={{ size: 8, offset: 2 }}>
-            <Settings
-              setLotteryType={setLotteryType}
-              setTimeWindow={setTimeWindow}
-              setMaxWinners={setMaxWinners}
-              setQuestion={setQuestion}
-            />
+          <br />
 
-            <br />
-
-            <QuestionBox
-              lotteryType={lotteryType}
-              timeWindow={timeWindow}
-              maxWinners={maxWinners}
-              question={question}
-              setQuestion={setQuestion}
-            />
-          </Col>
-        </Row>
-      </Container>
-    </div>
-  );
+          <QuestionBox
+            lotteryType={lotteryType}
+            timeWindow={timeWindow}
+            maxWinners={maxWinners}
+            question={question}
+            setQuestion={setQuestion}
+          />
+        </Col>
+      </Row>
+    </Container>
+  )
 }
 
 function Settings({ setLotteryType, setTimeWindow, setMaxWinners }) {
@@ -128,6 +144,30 @@ function apiCall(url, method = "GET", postObj) {
   .then((response) => {
     console.log(response);
   })
+}
+
+function Waiting() {
+  return (
+    <Container>
+      <Row>
+        <Col sm={{ size: 8, offset: 2 }}>
+          <h1>Waiting...</h1>
+        </Col>
+      </Row>
+    </Container>
+  )
+}
+
+function Winners() {
+  return (
+    <Container>
+    <Row>
+      <Col sm={{ size: 8, offset: 2 }}>
+        <h1 className="emojis">👏🎉🎊🥳💆‍♂️💆‍♀️</h1>
+      </Col>
+    </Row>
+  </Container>
+  )
 }
 
 export default App;
