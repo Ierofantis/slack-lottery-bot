@@ -1,15 +1,15 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
 
+require('dotenv').config();
+const configuration = require('./config');
+const logger = require('./app/helpers/logger');
+const routes = require('./app/http/routes');
 
-//connect to mongodb
-mongoose
-  .connect(`mongodb://heroku_skf9lr6x:nsqnc9a1liulkjoteg9tg2e93t@ds263848.mlab.com:63848/heroku_skf9lr6x`)
-  .then(() => console.log("Connected to MongoDB..."))
-  .catch(err => console.error("Could not connect to MongoDB..."));
 
 app.get("/", (req, res) => res.json({ status: 200, message: "hello" }));
+
+app.use('/api', routes.api);
 
 const port = process.env.PORT || 5000;
 
