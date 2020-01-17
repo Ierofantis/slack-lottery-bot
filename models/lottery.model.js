@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const LotterySchema = new mongoose.Schema(
   {
-    max_winners: Integer,
+    max_winners: Number,
     start_date: String,
-    time_window: Integer,
+    time_window: Number,
     active: Boolean,
     participants: [String],
     winners: [String]
