@@ -20,6 +20,9 @@ exports.connect = (request, response) => {
 }
 
 exports.buyin = async (request, response) => {
+  // console.log(request.body)
+  // return response.send(request.body.challenge);
+
   const lottery = await Lottery.where({ active: true }).findOne();
   let slackMsg;
   const userName = request.body.event.text.replace('<@UDW82H33R> ', '');
