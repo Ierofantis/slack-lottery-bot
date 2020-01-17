@@ -76,7 +76,7 @@ function Settings({ setLotteryType, setTimeWindow, setMaxWinners }) {
         <Col sm="5">
           <InputGroup >
             <InputGroupAddon addonType="prepend">Χρόνος:</InputGroupAddon>
-            <Input value={10} min={5} max={30} type="number" step="5" onChange={e => setTimeWindow(e.target.value)} />
+            <Input defaultValue={10} min={5} max={30} type="number" step="5" onChange={e => setTimeWindow(e.target.value)} />
             <InputGroupAddon addonType="append">λεπτά</InputGroupAddon>
           </InputGroup>
         </Col>
@@ -88,7 +88,7 @@ function Settings({ setLotteryType, setTimeWindow, setMaxWinners }) {
         <Col sm="4">
           <InputGroup >
             <InputGroupAddon addonType="prepend">Πόσοι τυχεροί;</InputGroupAddon>
-            <Input value={12} min={1} max={30} type="number" step="1" onChange={e => setMaxWinners(e.target.value)} />
+            <Input defaultValue={12} min={1} max={30} type="number" step="1" onChange={e => setMaxWinners(e.target.value)} />
           </InputGroup>
         </Col>
       </Row>
