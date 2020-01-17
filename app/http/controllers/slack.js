@@ -23,8 +23,7 @@ exports.connect = (request, response) => {
 exports.buyin = async (request, response) => {
   const lottery = await Lottery.where({ active: true }).findOne();
   let slackMsg;
-  const text = request.body.event.text.replace('<@UDW82H33R> ', '').split(' ');
-  const userName = text[0];
+  const userName = request.body.event.text.replace('<@UDW82H33R> ', '');
 
   if (lottery) {
     const userExistsInDB = await User.where({
@@ -38,22 +37,23 @@ exports.buyin = async (request, response) => {
       await newUser.save();
     } else {
       userExistsInDB.reg_alias = userName;
+      console.log(userName)
       await userExistsInDB.save();
     }
 
     lottery.participants.push(request.body.event.user)
     await lottery.save();
-    slackMsg = `Thanks Dude ({${userName}) Good Luck!`;
+    slackMsg = `Thanks ${userName} Good Luck!`;
 
   } else {
-    slackMsg = `Sorry Dude (${userName}) Νο massage today!`;
+    slackMsg = `Sorry ${userName} Νο massage today!`;
   }
 
-  webhook.send(slackMsg, (err, res) => {
-    if (err) {
-      logger.error(err);
-    } else {
-      response.customSuccess('ok');
-    }
-  });
+  // webhook.send(slackMsg, (err, res) => {
+  //   if (err) {
+  //     logger.error(err);
+  //   } else {
+  //     response.customSuccess('ok');
+  //   }
+  // });
 };
