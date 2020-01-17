@@ -4,7 +4,6 @@ const Config = require('../../../config')
 
 const url = process.env.SLACK_WEBHOOK_URL
 const webhook = new IncomingWebhook(url)
-const lotteryKey = process.env.LOTTERY_KEY
 const User  = require('../../../models/user')
 const Lottery  = require('../../../models/lottery')
 
