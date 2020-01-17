@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Ierofantis/slack-lottery-bot#readme",
   "dependencies": {
     "@slack/client": "^4.8.0",
+    "@slack/webhook": "^5.0.2",
     "axios": "^0.18.0",
     "bluebird": "^3.5.2",
     "body-parser": "^1.18.3",

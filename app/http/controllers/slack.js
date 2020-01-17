@@ -1,4 +1,4 @@
-const { IncomingWebhook } = require('@slack/client');
+const { IncomingWebhook } = require('@slack/webhook');
 const logger = require('../../helpers/logger');
 const Config = require('../../../config');
 
@@ -8,9 +8,11 @@ const lotteryKey = process.env.LOTTERY_KEY;
 
 
 exports.connect = (request, response) => {
-  webhook.send('Hello there', (err, res) => {
+  console.log(url)
+  webhook.send('Event started please register!', (err, res) => {
     if (err) {
       console.log('Error:', err);
+      response.customSuccess('ok');
     } else {
       // console.log('Message sent: ', res);
       response.customSuccess(res);
@@ -42,3 +44,4 @@ exports.buyin = (request, response) => {
   //   }
   // });
 };
+1
