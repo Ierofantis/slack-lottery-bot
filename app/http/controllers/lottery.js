@@ -2,22 +2,29 @@
 const logger = require('../../helpers/logger');
 const Config = require('../../../config');
 // const { User } = require('../../../models/user');
-// const { Lottery } = require('../../../models/lottery');
+const Lottery = require('../../../models/lottery');
 
 exports.end = (request, response) => {
-  // client.flushdb((err, succeeded) => {
-  //   console.log(succeeded); // will be true if successfull
-  // });
   const winners = ['me', 'you'];
-  response.customSuccess(winners);
+
+  webhook.send('Event winners are: !', (err, res) => {
+    if (err) {
+      console.log('Error:', err);
+      response.customSuccess('ok');
+    } else {
+      response.customSuccess();
+    }
+  });
+
 };
 
 
-exports.create = (request, response) => {
-
-  console.log(request.body)
+exports.create = async (request, response) => {
 
   const data = request.body;
+  data.active = true;
+  data.participants = [];
+  data.winners = [];
   const newLottery = new Lottery(data);
   await newLottery.save();
 
