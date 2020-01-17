@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const LotterySchema = new mongoose.Schema(
   {
     max_winners: Number,
-    start_date: String,
+    start_date: Date,
     time_window: Number,
     active: Boolean,
     question: String,
