@@ -21,27 +21,28 @@ exports.connect = (request, response) => {
 }
 
 exports.buyin = async (request, response) => {
-  const oldLottery = await Lottery.where({ active: true }).findOne()
+  const oldLottery = await Lottery.where({ active: true }).findOne();
 
   if (!oldLottery) {
+
     const userExistsInDB = await User.where({
       slack_id: request.body.event.user
-    }).findOne()
+    }).findOne();
 
     if (!userExistsInDB) {
       const newUser = new User({
         slack_id: request.body.event.user
-      })
+      });
 
       await newUser.save()
     }
 
     const newLottery = new User({
       participant: request.body.event.user
-    })
+    });
 
-    await newLottery.save()
+    await newLottery.save();
   } else {
-    return response.customSuccess('is running')
+    return response.customSuccess('Old lottery is running');
   }
-}
+};
