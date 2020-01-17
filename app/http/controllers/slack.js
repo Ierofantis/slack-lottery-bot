@@ -48,11 +48,11 @@ exports.buyin = async (request, response) => {
     slackMsg = `Sorry ${userName} Νο massage today!`;
   }
 
-  // webhook.send(slackMsg, (err, res) => {
-  //   if (err) {
-  //     logger.error(err);
-  //   } else {
-  //     response.customSuccess('ok');
-  //   }
-  // });
+  webhook.send(slackMsg, (err, res) => {
+    if (err) {
+      logger.error(err);
+    } else {
+      response.customSuccess('ok');
+    }
+  });
 };
