@@ -6,6 +6,7 @@ const LotterySchema = new mongoose.Schema(
     start_date: String,
     time_window: Number,
     active: Boolean,
+    question: String,
     participants: [String],
     winners: [String]
   },
