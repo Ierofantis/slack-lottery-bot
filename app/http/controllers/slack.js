@@ -4,9 +4,8 @@ const Config = require('../../../config')
 
 const url = process.env.SLACK_WEBHOOK_URL
 const webhook = new IncomingWebhook(url)
-const lotteryKey = process.env.LOTTERY_KEY
-const { User } = require('../../../models/user')
-const { Lottery } = require('../../../models/lottery')
+const User  = require('../../../models/user')
+const Lottery  = require('../../../models/lottery')
 
 exports.connect = (request, response) => {
   webhook.send('Event started please register!', (err, res) => {
@@ -21,28 +20,43 @@ exports.connect = (request, response) => {
 }
 
 exports.buyin = async (request, response) => {
-  const oldLottery = await Lottery.where({ active: true }).findOne();
+  // console.log(request.body)
+  // return response.send(request.body.challenge);
 
-  if (!oldLottery) {
+  const lottery = await Lottery.where({ active: true }).findOne();
+  let slackMsg;
+  const userName = request.body.event.text.replace('<@UDW82H33R> ', '');
 
+  if (lottery) {
     const userExistsInDB = await User.where({
       slack_id: request.body.event.user
     }).findOne();
 
     if (!userExistsInDB) {
       const newUser = new User({
-        slack_id: request.body.event.user
+        slack_id: request.body.event.user,
+        probability: 100
       });
-
-      await newUser.save()
+      await newUser.save();
+    } else {
+      userExistsInDB.reg_alias = userName;
+      console.log(userName)
+      await userExistsInDB.save();
     }
 
-    const newLottery = new User({
-      participant: request.body.event.user
-    });
+    lottery.participants.push(request.body.event.user)
+    await lottery.save();
+    slackMsg = `Thanks ${userName} Good Luck!`;
 
-    await newLottery.save();
   } else {
-    return response.customSuccess('Old lottery is running');
+    slackMsg = `Sorry ${userName} Νο massage today!`;
   }
+
+  webhook.send(slackMsg, (err, res) => {
+    if (err) {
+      logger.error(err);
+    } else {
+      response.customSuccess('ok');
+    }
+  });
 };
