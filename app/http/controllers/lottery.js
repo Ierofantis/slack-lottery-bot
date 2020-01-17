@@ -1,11 +1,36 @@
 
 const logger = require('../../helpers/logger');
 const Config = require('../../../config');
-// const { User } = require('../../../models/user');
+const User = require('../../../models/user');
 const Lottery = require('../../../models/lottery');
+const { IncomingWebhook } = require('@slack/webhook');
+const url = process.env.SLACK_WEBHOOK_URL;
+const webhook = new IncomingWebhook(url);
 
-exports.end = (request, response) => {
-  const winners = ['me', 'you'];
+exports.end = async (request, response) => {
+  let winners;
+  const lottery = await Lottery
+      .where({ active: true })
+      .findOne();
+  if (lottery) { 
+    
+    winners = lottery.winners;
+    if (winners.length === 0) {
+      winners = ['Leo', 'Nik', 'Teo', 'Dimitris'];
+    }
+    console.log(winners)
+    webhook.send('Winners Are:' + winners.join(','), (err, res) => {
+      if (err) {
+        console.log('Error:', err);
+        response.customSuccess('ok');
+      } else {
+        // console.log('Message sent: ', res);
+        response.customSuccess('ok');
+      }
+    });
+  } else {
+    return response.customError('No active lottery');
+  }
 
   webhook.send('Event winners are: !', (err, res) => {
     if (err) {
@@ -18,14 +43,13 @@ exports.end = (request, response) => {
 
 };
 
-
 exports.create = async (request, response) => {
 
   const oldLottery = await Lottery
       .where({ active: true })
       .findOne();
   if (oldLottery) { 
-    return response.customError('There is already an active poll');
+    return response.customError('There is already an active lottery');
   } else {
     const data = request.body;
     data.active = true;
@@ -38,7 +62,6 @@ exports.create = async (request, response) => {
   }
 
 }
-
 
 exports.cancel = async (request, response) => {
 

@@ -20,8 +20,4 @@ api.post('/slack/buyin', SlackController.buyin);
 api.post('/lottery/end', LotteryController.end);
 api.post('/lottery/create', LotteryController.create);
 api.post('/lottery/cancel', LotteryController.cancel);
-// api.get('/subjects/:brand/:email', SlackController.retrieve);
-// api.get('/subjects/:id/verify', SlackController.verify);
-// api.get('/subjects/purge', SlackController.purge);
-
 exports.api = api;

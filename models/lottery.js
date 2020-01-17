@@ -14,23 +14,3 @@ const LotterySchema = mongoose.Schema(
 
 module.exports = mongoose.model('Lottery', LotterySchema);
 
-
-// const mongoose = require('mongoose');
-
-// const SessionSchema = mongoose.Schema({
-//   email: {
-//     type: String,
-//     required: true,
-//   },
-//   session_id: {
-//     type: String,
-//     index: true,
-//     required: true,
-//   },
-//   created_at: {
-//     type: Date,
-//     default: Date.now,
-//   },
-// });
-
-// module.exports = mongoose.model('Session', SessionSchema);
