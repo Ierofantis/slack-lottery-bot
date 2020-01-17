@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+import { BrowserRouter as Router, Route, useHistory } from "react-router-dom";
 import './App.css';
 import {
   Container,
   Row,
   Col,
   Jumbotron,
+  Input,
   InputGroup,
   InputGroupAddon,
-  Input,
   Button,
   ButtonGroup
  } from 'reactstrap';
@@ -49,6 +49,7 @@ function Main() {
   const [timeWindow, setTimeWindow] = useState("10");
   const [maxWinners, setMaxWinners] = useState("12");
   const [question, setQuestion] = useState("Who..?");
+  const history = useHistory();
 
   return (
     <Container>
@@ -69,6 +70,7 @@ function Main() {
             maxWinners={maxWinners}
             question={question}
             setQuestion={setQuestion}
+            history={history}
           />
         </Col>
       </Row>
@@ -112,18 +114,18 @@ function Settings({ setLotteryType, setTimeWindow, setMaxWinners }) {
   )
 }
 
-function QuestionBox({ lotteryType, timeWindow, maxWinners, question, setQuestion }) {
+function QuestionBox({ lotteryType, timeWindow, maxWinners, question, setQuestion, history }) {
   return (
     <InputGroup>
       <Input placeholder="Ποιός είναι ο παλιότερος efooder?" onChange={e => setQuestion(e.target.value)} />
       <InputGroupAddon addonType="append">
-        <Button color="success" onClick={() => startLottery(lotteryType, timeWindow, maxWinners, question)}>Go!</Button>
+        <Button color="success" onClick={() => startLottery(lotteryType, timeWindow, maxWinners, question, history)}>Go!</Button>
       </InputGroupAddon>
     </InputGroup>
   )
 }
 
-function startLottery(lotteryType, timeWindow, maxWinners, question) {
+function startLottery(lotteryType, timeWindow, maxWinners, question, history) {
   let url = methods.create;
   let method = "POST";
   let postObj = {
@@ -132,10 +134,10 @@ function startLottery(lotteryType, timeWindow, maxWinners, question) {
     "time_window": timeWindow
   }
 
-  apiCall(url, method, postObj);
+  apiCall(url, method, postObj, history);
 }
 
-function apiCall(url, method = "GET", postObj) {
+function apiCall(url, method = "GET", postObj, history) {
   fetch(`${apiURL}/${url}`, {
     method,
     body: JSON.stringify(postObj)
@@ -143,6 +145,7 @@ function apiCall(url, method = "GET", postObj) {
   .then((response) => response.json())
   .then((response) => {
     console.log(response);
+    history.push("/Winners");
   })
 }
 
@@ -161,12 +164,12 @@ function Waiting() {
 function Winners() {
   return (
     <Container>
-    <Row>
-      <Col sm={{ size: 8, offset: 2 }}>
-        <h1 className="emojis">👏🎉🎊🥳💆‍♂️💆‍♀️</h1>
-      </Col>
-    </Row>
-  </Container>
+      <Row>
+        <Col sm={{ size: 8, offset: 2 }}>
+          <h1 className="emojis">👏🎉🎊🥳💆‍♂️💆‍♀️</h1>
+        </Col>
+      </Row>
+    </Container>
   )
 }
 
