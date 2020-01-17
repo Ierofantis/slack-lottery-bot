@@ -19,24 +19,26 @@ exports.connect = (request, response) => {
 };
 
 exports.buyin = (request, response) => {
-  // console.log(request.body)
-
-  const text = request.body.event.text.replace('<@UDW82H33R> ', '').split(' ');
-  const { user } = request.body.event;
-  const userName = text[0];
-
-  let slackMsg = false;
-  if (true) {
-    slackMsg = `Thanks Dude ({${userName}) Good Luck!`;
-  } else {
-    slackMsg = `Sorry Dude (${userName}) Νο massage today!`;
-  }
-  
-  webhook.send(slackMsg, (err, res) => {
-    if (err) {
-      logger.error(err);
-    } else {
-      response.customSuccess(res);
-    }
+  response.customSuccess({
+    challenge: request.body.challenge
   });
+
+  // const text = request.body.event.text.replace('<@UDW82H33R> ', '').split(' ');
+  // const { user } = request.body.event;
+  // const userName = text[0];
+
+  // let slackMsg = false;
+  // if (true) {
+  //   slackMsg = `Thanks Dude ({${userName}) Good Luck!`;
+  // } else {
+  //   slackMsg = `Sorry Dude (${userName}) Νο massage today!`;
+  // }
+  
+  // webhook.send(slackMsg, (err, res) => {
+  //   if (err) {
+  //     logger.error(err);
+  //   } else {
+  //     response.customSuccess(res);
+  //   }
+  // });
 };
