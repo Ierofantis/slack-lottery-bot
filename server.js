@@ -15,7 +15,7 @@ mongoose
   .then(() => console.log("Connected to MongoDB..."))
   .catch(err => console.error("Could not connect to MongoDB..."));
 
-app.get("/", (req, res) => res.json({ status: 200, message: "hello" }));
+app.get("/", (req, res) => res.json({ status: 200, message: "slack-lottery-app" }));
 
 app.use('/api', routes.api);
 
