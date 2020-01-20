@@ -20,15 +20,15 @@ exports.connect = (request, response) => {
 }
 
 exports.buyin = async (request, response) => {
-
-  if(process.env.VERIFY_SLACK){
+  
+  if(process.env.VERIFY_SLACK == 'true'){
+    logger.info('Verify Slack enabled');
     return response.send(request.body.challenge);
   }
 
   const lottery = await Lottery.where({ active: true }).findOne();
   let slackMsg;
   const userName = request.body.event.text.replace('<@UDW82H33R> ', '');
-
   if (lottery) {
     const userExistsInDB = await User.where({
       slack_id: request.body.event.user
@@ -42,7 +42,6 @@ exports.buyin = async (request, response) => {
       await newUser.save();
     } else {
       userExistsInDB.reg_alias = userName;
-      console.log(userName)
       await userExistsInDB.save();
     }
 
