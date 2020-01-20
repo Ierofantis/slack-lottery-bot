@@ -20,8 +20,10 @@ exports.connect = (request, response) => {
 }
 
 exports.buyin = async (request, response) => {
-  // console.log(request.body)
-  // return response.send(request.body.challenge);
+
+  if(process.env.VERIFY_SLACK){
+    return response.send(request.body.challenge);
+  }
 
   const lottery = await Lottery.where({ active: true }).findOne();
   let slackMsg;
