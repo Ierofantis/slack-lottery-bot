@@ -57,7 +57,8 @@ exports.buyin = async (request, response) => {
     if (err) {
       logger.error(err);
     } else {
-      response.customSuccess('ok');
+      logger.info('Webhook Succesful for:' + userName)
     }
   });
+  response.sendStatus(200)
 };
