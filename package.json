@@ -19,7 +19,7 @@
   "dependencies": {
     "@slack/client": "^4.8.0",
     "@slack/webhook": "^5.0.2",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bluebird": "^3.5.2",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
